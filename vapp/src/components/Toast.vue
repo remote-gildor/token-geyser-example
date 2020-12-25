@@ -14,17 +14,29 @@ export default {
     const contractEventHandler = ({ contractName, eventName, data }) => {
       if (data._from == this.activeAccount) {
         let display = `${contractName}(${eventName}) - ${data}`;
+        let subOptions;
 
-        if (eventName === 'ValueSet') {
-          display = "You have set the value to " + data.val + "!";
+        if (eventName === 'Staked') {
+          display = "You have just staked " + data.amount + " tokens.";
+
+          subOptions = {
+            theme: "bubble",
+            position: "top-center", 
+            duration: 5000,
+            type: "success"
+          };
         }
 
-        const subOptions = {
-          theme: "bubble",
-          position: "top-center", 
-          duration: 5000,
-          type: "success"
-        };
+        if (eventName === 'Unstaked') {
+          display = "You have unstaked " + data.amount + " tokens.";
+
+          subOptions = {
+            theme: "bubble",
+            position: "top-center", 
+            duration: 5000,
+            type: "error"
+          };
+        }
 
         this.$toasted.show(display, subOptions);
       }  

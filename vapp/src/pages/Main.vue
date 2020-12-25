@@ -1,41 +1,40 @@
 <template>
-  <b-container>
-    <h1>Main page</h1>
+  <b-container class="text-center">
+    <h1>Token Geyser</h1>
 
-    <p>This dApp allows you to read and set the value within the Value.sol smart contract.</p>
+    <p>Get sprinkled with tokens.</p>
 
-    <div class="mb-3">
-      <b-card title="Current value">
-        <b-card-text>
-          <strong>Value:</strong> {{ getValue }}
-        </b-card-text>
-      </b-card>
-    </div>
+    <b-row>
+      <b-col md="4" offset-md="4">
+        <b-card bg-variant="info" text-variant="white" header="Info" class="text-center">
+          <b-card-text>
+            <p>
+              <strong>Your deposited tokens:</strong> 0
+            </p>
 
-    <div>
-      <b-card title="Set new value">
-        <b-card-text>
-          
-          <b-form @submit.prevent="onSubmit">
-            <b-form-group id="input-group-1" label-for="crowdsale-ether-field">
+            <p>
+              <strong>TOTAL deposited tokens:</strong> 0
+            </p>
+          </b-card-text>
+        </b-card>
+      </b-col>
+    </b-row>
 
-              <b-form-input 
-                  id="set-value-field" 
-                  v-model="newValue" 
-                  type="text" 
-                  required 
-                  placeholder="0.0"
-                  trim
-                >
-              </b-form-input>
+    <b-row class="mt-4">
+      <b-col md="4" offset-md="4">
+        <b-card bg-variant="success" text-variant="white" header="Deposit" class="text-center">
+          <b-card-text>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</b-card-text>
+        </b-card>
+      </b-col>
+    </b-row>
 
-              <b-button class="mt-2" type="submit" variant="primary">Submit</b-button>
-            </b-form-group>
-          </b-form>
-
-        </b-card-text>
-      </b-card>
-    </div>
+    <b-row class="mt-4">
+      <b-col md="4" offset-md="4">
+        <b-card bg-variant="danger" text-variant="white" header="Withdraw" class="text-center">
+          <b-card-text>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</b-card-text>
+        </b-card>
+      </b-col>
+    </b-row>
 
   </b-container>
 </template>
@@ -49,39 +48,17 @@ export default {
     ...mapGetters("accounts", ["activeAccount"]),
     ...mapGetters("contracts", ["getContractData"]),
     ...mapGetters("drizzle", ["drizzleInstance"]),
-
-    getValue() {
-      let value = this.getContractData({
-        contract: "Value",
-        method: "getValue"
-      });
-
-      if (value === "loading") return "0";
-      
-      return value
-    }
   },
   created() {
-    this.$store.dispatch("drizzle/REGISTER_CONTRACT", {
-      contractName: "Value",
-      method: "getValue",
-      methodArgs: []
-    });
+
   },
   data() {
     return {
-      newValue: "1"
+
     }
   },
   methods: {
-    onSubmit() {
-      this.drizzleInstance.contracts['Value'].methods['setValue'].cacheSend(
-        this.newValue,
-        {
-          from: this.activeAccount
-        }
-      )
-    }
+    
   }
 }
 </script>

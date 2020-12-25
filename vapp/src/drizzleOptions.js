@@ -1,14 +1,14 @@
-import Value from './contracts/Value.json';
+import TokenGeyser from './contracts/TokenGeyser.json';
 
 const options = {
   web3: {
     block: false
   },
   contracts: [ 
-    Value
+    TokenGeyser
   ],
   events: {
-    Value: ['ValueSet']
+    TokenGeyser: ['Staked', 'Unstaked']
   },
   polls: {
     accounts: 15000
