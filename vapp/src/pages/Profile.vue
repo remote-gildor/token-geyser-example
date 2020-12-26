@@ -12,7 +12,14 @@
           <b-card-text class="mt-2">
             <p>{{ activeAccount }}</p>
             <p><strong>Your ETH balance:</strong> {{ Number(getEthBalance).toFixed(4) }} ETH</p>
-            <p><strong>Your ST balance:</strong> {{ Number(getStakingTokenBalance).toFixed(2) }} ST</p>
+            <p>
+              <b-icon icon="hdd-stack-fill"></b-icon> &#9;
+              <strong>Your ST balance:</strong> {{ Number(getStakingTokenBalance).toFixed(2) }} ST
+              </p>
+            <p>
+              <b-icon icon="trophy-fill"></b-icon> &#9;
+              <strong>Your RT balance:</strong> {{ Number(getRewardTokenBalance).toFixed(2) }} RT
+              </p>
           </b-card-text>
 
         </b-card>
@@ -35,6 +42,7 @@ export default {
         ...mapGetters("accounts", ["activeAccount", "activeBalance"]),
         ...mapGetters("drizzle", ["isDrizzleInitialized", "drizzleInstance"]),
         ...mapGetters("profile", ["getStakingTokenBalance"]),
+        ...mapGetters("profile", ["getRewardTokenBalance"]),
         userAccount() {
             return this.activeAccount
         },
@@ -44,9 +52,11 @@ export default {
     },
     created() {
         this.$store.dispatch("profile/fetchStakingTokenBalance");
+        this.$store.dispatch("profile/fetchRewardTokenBalance");
     },
     methods: {
-        ...mapActions("profile", ["fetchStakingTokenBalance"])
+        ...mapActions("profile", ["fetchStakingTokenBalance"]),
+        ...mapActions("profile", ["fetchRewardTokenBalance"])
     }
 }
 </script>
