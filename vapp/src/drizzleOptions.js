@@ -8,7 +8,7 @@ const options = {
     TokenGeyser
   ],
   events: {
-    TokenGeyser: ['Staked', 'Unstaked']
+    TokenGeyser: ["Staked", "Unstaked", "TokensLocked"]
   },
   polls: {
     accounts: 15000

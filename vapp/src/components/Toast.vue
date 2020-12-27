@@ -25,6 +25,9 @@ export default {
             duration: 5000,
             type: "success"
           };
+
+          this.$store.dispatch("profile/fetchStakingTokenBalance");
+          this.$store.dispatch("geyser/fetchLockedStakingTokens");
         }
 
         if (eventName === 'Unstaked') {
@@ -36,6 +39,22 @@ export default {
             duration: 5000,
             type: "error"
           };
+
+          this.$store.dispatch("profile/fetchStakingTokenBalance");
+          this.$store.dispatch("geyser/fetchLockedStakingTokens");
+        }
+
+        if (eventName === 'TokensLocked') {
+          display = "You have added " + data.amount + " reward tokens in the geyser.";
+
+          subOptions = {
+            theme: "bubble",
+            position: "top-center", 
+            duration: 5000,
+            type: "success"
+          };
+
+          this.$store.dispatch("geyser/fetchLockedRewardTokens");
         }
 
         this.$toasted.show(display, subOptions);

@@ -81,8 +81,8 @@ export default {
     }
   },
   created() {
-      this.$store.dispatch("profile/fetchRewardTokenBalance");
-      this.$store.dispatch("allowance/fetchRewardAllowance");
+    this.$store.dispatch("profile/fetchRewardTokenBalance");
+    this.$store.dispatch("allowance/fetchRewardAllowance");
   },
   data() {
     return {
@@ -95,20 +95,18 @@ export default {
       ...mapActions("allowance", ["fetchRewardAllowance"]),
 
       async onAddRewardTokensSubmit() {
+        let component = this;
+        let geyserContract = this.drizzleInstance.contracts.TokenGeyser;
+        let web3 = this.drizzleInstance.web3;
+
+        let rwTokensWei = web3.utils.toWei(this.rtValue, 'ether');
+
         if (!this.isAllowanceBigEnough) {
-          window.console.log("APPROVE!!!");
-
-          let component = this;
-          let geyserContract = this.drizzleInstance.contracts.TokenGeyser;
-          let web3 = this.drizzleInstance.web3;
-
           // get reward token address
           let rewardToken = await geyserContract.methods.getDistributionToken().call();
 
-          // fetch Staking Token contract
+          // fetch Reward Token contract
           let rwContract = new web3.eth.Contract(rwData.abi, rewardToken);
-
-          let rwTokensWei = web3.utils.toWei(this.rtValue, 'ether');
 
           // set token spending approval
           await rwContract.methods.approve(geyserContract.address, rwTokensWei).send({
@@ -124,7 +122,6 @@ export default {
               });
             }
             if (hash) {
-              window.console.log("TX hash: " + hash);
               // subscribe to the approval event
               rwContract.once("Approval", {
                 filter: { owner: component.activeAccount }
@@ -140,8 +137,6 @@ export default {
                 }
 
                 if (event) {
-                  window.console.log("Event:");
-                  window.console.log(event);
                   component.$toasted.show('The Approval transaction has succeeded! Now you can submit the reward tokens.', {
                     type: 'success',
                     duration: 9000,
@@ -157,7 +152,7 @@ export default {
             }
           });
         } else {
-          window.console.log("SUBMIT!!!");
+          this.drizzleInstance.contracts["TokenGeyser"].methods["lockTokens"].cacheSend(rwTokensWei, this.rtLength);
         }
       }
   }
