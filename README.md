@@ -8,6 +8,21 @@ provides a Vue.js front-end for it.
 The drawback of the TokenGeyser smart contract is that it doesn't have a view function to calculate the number of 
 accrued distribution tokens (aka Reward tokens).
 
+## Screenshots
+
+### Main page
+
+![](assets/img/main-1.png)
+![](assets/img/main-2.png)
+
+### Current user's profile
+
+![](assets/img/profile.png)
+
+### Admin
+
+![](assets/img/admin.png)
+
 ## Install npm packages
 
 Run `npm install` command in both root folder and the `vapp` folder.

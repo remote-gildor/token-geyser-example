@@ -3,7 +3,13 @@
     <h1>Admin page</h1>
     <p>This page is visible to the smart contract owner only.</p>
 
-    <b-row class="mt-1">
+    <b-alert show variant="danger" v-if="!isActiveUserAdmin">
+      <b-icon icon="exclamation-triangle-fill"></b-icon> &#9;
+      You are <strong>not</strong> the owner of this smart contract!
+      <b-icon icon="exclamation-triangle-fill"></b-icon> &#9;
+    </b-alert>
+
+    <b-row class="mt-1" v-if="isActiveUserAdmin">
       <b-col md="4" offset-md="4">
         <b-card bg-variant="success" text-variant="white" header="Add reward tokens" class="text-center">
           <b-card-text>
@@ -47,14 +53,6 @@
         </b-card>
       </b-col>
     </b-row>
-
-    <b-row class="mt-4">
-      <b-col md="4" offset-md="4">
-        <b-card bg-variant="danger" text-variant="white" header="Rescue tokens" class="text-center">
-          <b-card-text>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</b-card-text>
-        </b-card>
-      </b-col>
-    </b-row>
   </b-container>
 </template>
 
@@ -67,8 +65,24 @@ export default {
   computed: {
     ...mapGetters("accounts", ["activeAccount"]),
     ...mapGetters("allowance", ["getRewardAllowance"]),
+    ...mapGetters("contracts", ["getContractData"]),
     ...mapGetters("drizzle", ["drizzleInstance"]),
     ...mapGetters("profile", ["getRewardTokenBalance"]),
+
+    isActiveUserAdmin() {
+      let owner = this.getContractData({
+        contract: "TokenGeyser",
+        method: "owner"
+      });
+
+      if (owner === "loading") return "0";
+
+      if (owner === this.activeAccount) {
+        return true;
+      } else {
+        return false;
+      }
+    },
     
     isAllowanceBigEnough() {
       if (this.getRewardAllowance == 0) {
@@ -83,6 +97,12 @@ export default {
   created() {
     this.$store.dispatch("profile/fetchRewardTokenBalance");
     this.$store.dispatch("allowance/fetchRewardAllowance");
+
+    this.$store.dispatch("drizzle/REGISTER_CONTRACT", {
+      contractName: "TokenGeyser",
+      method: "owner",
+      methodArgs: []
+    });
   },
   data() {
     return {
