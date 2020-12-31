@@ -13,7 +13,7 @@
             </p>
 
             <p>
-              <strong>Your staking tokens:</strong> 0
+              <strong>Your staking tokens:</strong> {{Number(getCurrentUserStakingBalance).toFixed(2)}}
             </p>
           </b-card-text>
         </b-card>
@@ -29,7 +29,7 @@
             </p>
 
             <p>
-              <strong>Your RT tokens:</strong> 0
+              <strong>Your withdrawn RT tokens:</strong> {{ Number(getRewardTokenBalance).toFixed(2) }}
             </p>
           </b-card-text>
         </b-card>
@@ -89,8 +89,8 @@ export default {
     ...mapGetters("allowance", ["getStakingAllowance"]),
     ...mapGetters("contracts", ["getContractData"]),
     ...mapGetters("drizzle", ["drizzleInstance"]),
-    ...mapGetters("geyser", ["getLockedRewardTokens", "getLockedStakingTokens"]),
-    ...mapGetters("profile", ["getStakingTokenBalance"]),
+    ...mapGetters("geyser", ["getLockedRewardTokens", "getLockedStakingTokens", "getCurrentUserStakingBalance"]),
+    ...mapGetters("profile", ["getStakingTokenBalance", "getRewardTokenBalance"]),
 
     isStakingAllowanceBigEnough() {
       if (this.getStakingAllowance == 0) {
@@ -105,7 +105,9 @@ export default {
   created() {
     this.$store.dispatch("geyser/fetchLockedRewardTokens");
     this.$store.dispatch("geyser/fetchLockedStakingTokens");
+    this.$store.dispatch("geyser/fetchCurrentUserStakingBalance");
     this.$store.dispatch("profile/fetchStakingTokenBalance");
+    this.$store.dispatch("profile/fetchRewardTokenBalance");
     this.$store.dispatch("allowance/fetchStakingAllowance");
   },
   data() {
@@ -114,9 +116,8 @@ export default {
     }
   },
   methods: {
-    ...mapActions("geyser", ["fetchLockedRewardTokens"]),
-    ...mapActions("geyser", ["fetchLockedStakingTokens"]),
-    ...mapActions("profile", ["fetchStakingTokenBalance"]),
+    ...mapActions("geyser", ["fetchLockedRewardTokens", "fetchLockedStakingTokens", "fetchCurrentUserStakingBalance"]),
+    ...mapActions("profile", ["fetchStakingTokenBalance", "fetchRewardTokenBalance"]),
     ...mapActions("allowance", ["fetchStakingAllowance"]),
 
     async onDepositStakingTokensSubmit() {

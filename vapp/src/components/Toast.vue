@@ -12,12 +12,15 @@ export default {
   },
   mounted() {
     const contractEventHandler = ({ contractName, eventName, data }) => {
-      if (data._from == this.activeAccount) {
-        let display = `${contractName}(${eventName}) - ${data}`;
-        let subOptions;
+      let web3 = this.drizzleInstance.web3;
+      let display = `${contractName}(${eventName}) - ${data}`;
+      let subOptions;
+
+      if (data.user == this.activeAccount) { // if event has the user field
 
         if (eventName === 'Staked') {
-          display = "You have just staked " + data.amount + " tokens.";
+          let amount = web3.utils.fromWei(data.amount, "ether");
+          display = "You have just staked " + amount + " tokens.";
 
           subOptions = {
             theme: "bubble",
@@ -28,10 +31,13 @@ export default {
 
           this.$store.dispatch("profile/fetchStakingTokenBalance");
           this.$store.dispatch("geyser/fetchLockedStakingTokens");
+          this.$store.dispatch("geyser/fetchCurrentUserStakingBalance");
+          this.$store.dispatch("allowance/fetchStakingAllowance");
         }
 
         if (eventName === 'Unstaked') {
-          display = "You have unstaked " + data.amount + " tokens.";
+          let amount = web3.utils.fromWei(data.amount, "ether");
+          display = "You have unstaked " + amount + " tokens.";
 
           subOptions = {
             theme: "bubble",
@@ -44,21 +50,25 @@ export default {
           this.$store.dispatch("geyser/fetchLockedStakingTokens");
         }
 
-        if (eventName === 'TokensLocked') {
-          display = "You have added " + data.amount + " reward tokens in the geyser.";
-
-          subOptions = {
-            theme: "bubble",
-            position: "top-center", 
-            duration: 5000,
-            type: "success"
-          };
-
-          this.$store.dispatch("geyser/fetchLockedRewardTokens");
-        }
-
-        this.$toasted.show(display, subOptions);
       }  
+
+      if (eventName === 'TokensLocked') {
+        let amount = web3.utils.fromWei(data.amount, "ether");
+        display = "You have added " + amount + " reward tokens in the geyser.";
+
+        subOptions = {
+          theme: "bubble",
+          position: "top-center", 
+          duration: 5000,
+          type: "success"
+        };
+
+        this.$store.dispatch("geyser/fetchLockedRewardTokens");
+        this.$store.dispatch("profile/fetchRewardTokenBalance");
+        this.$store.dispatch("allowance/fetchRewardAllowance");
+      }
+
+      this.$toasted.show(display, subOptions);
     };
 
     this.$drizzleEvents.$on('drizzle/contractEvent', payload => {

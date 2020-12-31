@@ -41,8 +41,7 @@ export default {
     computed: {
         ...mapGetters("accounts", ["activeAccount", "activeBalance"]),
         ...mapGetters("drizzle", ["isDrizzleInitialized", "drizzleInstance"]),
-        ...mapGetters("profile", ["getStakingTokenBalance"]),
-        ...mapGetters("profile", ["getRewardTokenBalance"]),
+        ...mapGetters("profile", ["getStakingTokenBalance", "getRewardTokenBalance"]),
         userAccount() {
             return this.activeAccount
         },
@@ -55,8 +54,7 @@ export default {
         this.$store.dispatch("profile/fetchRewardTokenBalance");
     },
     methods: {
-        ...mapActions("profile", ["fetchStakingTokenBalance"]),
-        ...mapActions("profile", ["fetchRewardTokenBalance"])
+        ...mapActions("profile", ["fetchStakingTokenBalance", "fetchRewardTokenBalance"]),
     }
 }
 </script>
