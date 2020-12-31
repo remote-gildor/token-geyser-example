@@ -46,8 +46,11 @@ export default {
             type: "error"
           };
 
+          this.$store.dispatch("profile/fetchRewardTokenBalance");
           this.$store.dispatch("profile/fetchStakingTokenBalance");
           this.$store.dispatch("geyser/fetchLockedStakingTokens");
+          this.$store.dispatch("geyser/fetchLockedRewardTokens");
+          this.$store.dispatch("geyser/fetchCurrentUserStakingBalance");
         }
 
       }  

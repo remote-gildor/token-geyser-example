@@ -29,7 +29,7 @@
             </p>
 
             <p>
-              <strong>Your withdrawn RT tokens:</strong> {{ Number(getRewardTokenBalance).toFixed(2) }}
+              <strong>Your account RT balance:</strong> {{ Number(getRewardTokenBalance).toFixed(2) }}
             </p>
           </b-card-text>
         </b-card>
@@ -60,17 +60,42 @@
               </b-form-text>
 
               <b-button class="m-2" type="submit" variant="light" :disabled="isStakingAllowanceBigEnough">Approve</b-button>
-              <b-button class="m-2" type="submit" variant="light" :disabled="!isStakingAllowanceBigEnough">Submit</b-button>
+              <b-button class="m-2" type="submit" variant="light" :disabled="!isStakingAllowanceBigEnough">Deposit</b-button>
             </b-form-group>
           </b-form>
         </b-card>
       </b-col>
     </b-row>
 
-    <b-row class="mt-4">
+    <b-row class="mt-4 mb-4">
       <b-col md="4" offset-md="4">
         <b-card bg-variant="danger" text-variant="white" header="Withdraw (ST & RT)" class="text-center">
-          <b-card-text>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</b-card-text>
+
+          <b-card-text>Enter the amount of ST tokens that you want to unstake (you'll also receive RT tokens).</b-card-text>
+
+          <b-form @submit.prevent="onWithdrawStakingTokensSubmit">
+            <b-form-group id="input-group-st-lock">
+
+              <b-input-group append="ST" class="mt-1 mb-2">
+                <b-form-input 
+                  id="unst-lock-value-field" 
+                  v-model="unstValue" 
+                  type="text" 
+                  required 
+                  value=0
+                  trim
+                >
+                </b-form-input>
+              </b-input-group>
+
+              <b-form-text text-variant="white">
+                Your staked balance is <strong>{{ getCurrentUserStakingBalance }} ST</strong> tokens.
+              </b-form-text>
+
+              <b-button class="m-2" type="submit" variant="light">Withdraw</b-button>
+            </b-form-group>
+          </b-form>
+
         </b-card>
       </b-col>
     </b-row>
@@ -112,7 +137,8 @@ export default {
   },
   data() {
     return {
-      stValue: 0
+      stValue: 0,
+      unstValue: 0
     }
   },
   methods: {
@@ -183,7 +209,13 @@ export default {
             this.drizzleInstance.web3.utils.hexToBytes("0x0000000000000000000000000000000000000000") // empty calldata
           );
         }
-      }
+    },
+    async onWithdrawStakingTokensSubmit() {
+      this.drizzleInstance.contracts["TokenGeyser"].methods["unstake"].cacheSend(
+        this.drizzleInstance.web3.utils.toWei(this.unstValue, 'ether'), 
+        this.drizzleInstance.web3.utils.hexToBytes("0x0000000000000000000000000000000000000000") // empty calldata
+      );
+    }
   }
 }
 </script>
